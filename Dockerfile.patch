@@ -1,0 +1,17 @@
+FROM 646558765106.dkr.ecr.ap-northeast-2.amazonaws.com/skyline-ojm:latest
+
+# SPA 라우팅을 위한 컨트롤러 추가
+COPY src/main/java/com/example/skyline/controller/SpaController.java /tmp/SpaController.java
+
+# 기존 JAR 파일을 추출하고 새 클래스 추가
+USER root
+RUN cd /app && \
+    jar -xf app.jar && \
+    mkdir -p BOOT-INF/classes/com/example/skyline/controller && \
+    javac -cp "BOOT-INF/lib/*:BOOT-INF/classes" /tmp/SpaController.java -d BOOT-INF/classes && \
+    jar -cfm app-new.jar META-INF/MANIFEST.MF -C . . && \
+    mv app-new.jar app.jar && \
+    rm -rf META-INF BOOT-INF org /tmp/SpaController.java && \
+    chown skyline:skyline app.jar
+
+USER skyline

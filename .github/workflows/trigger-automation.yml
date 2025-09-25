@@ -1,0 +1,50 @@
+name: Trigger Infrastructure Automation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'Dockerfile'
+
+jobs:
+  trigger-lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Trigger skyline-q-agent Lambda
+        run: |
+          aws lambda invoke \
+            --function-name skyline-q-agent \
+            --payload '{
+              "repository": "${{ github.repository }}",
+              "branch": "${{ github.ref_name }}",
+              "commit": "${{ github.sha }}",
+              "requirements": {
+                "eks_version": "1.33",
+                "eks_instance_type": "t3.medium",
+                "db_instance_class": "t3.micro",
+                "db_user": "skyline_ojm",
+                "db_name": "skyline",
+                "db_password": "skyline1267",
+                "nat_gateways": 1,
+                "load_balancer": "alb",
+                "domain": "www.greenbespinglobal.store",
+                "image": "646558765106.dkr.ecr.ap-northeast-2.amazonaws.com/skyline-app-lyjking:1.7",
+                "tfstate_bucket": "skyline-infra"
+              }
+            }' \
+            --region ap-northeast-2 \
+            response.json
+          
+          cat response.json

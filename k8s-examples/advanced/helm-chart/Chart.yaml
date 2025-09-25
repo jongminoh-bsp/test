@@ -1,0 +1,14 @@
+apiVersion: v2
+name: skyline
+description: Skyline 항공예약시스템 Helm Chart
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - skyline
+  - airline
+  - reservation
+  - demo
+home: https://github.com/jaehyukryu/skyline_system_demo
+maintainers:
+  - name: "Skyline Team"
+    email: "skyline@example.com"

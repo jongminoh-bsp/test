@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  skyline-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=skyline-db
+      - DB_PORT=3306
+      - DB_NAME=skyline
+      - DB_USER=skyline_user
+      - DB_PASSWORD=skyline_pass
+      - DB_CONNECTION_POOL_SIZE=5
+    depends_on:
+      skyline-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  skyline-db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=skyline
+      - MYSQL_USER=skyline_user
+      - MYSQL_PASSWORD=skyline_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./sql/seed-data.sql:/docker-entrypoint-initdb.d/2-seed-data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "skyline_user", "-pskyline_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysql_data:

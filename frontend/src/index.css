@@ -1,0 +1,138 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Ant Design customization */
+.ant-layout {
+  min-height: 100vh;
+}
+
+.ant-layout-header {
+  background: linear-gradient(90deg, #1890ff 0%, #722ed1 100%);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-layout-content {
+  padding: 24px;
+  background: #fff;
+  margin: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom styles */
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: auto;
+}
+
+.logo::before {
+  content: '✈️';
+  margin-right: 8px;
+}
+
+.flight-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s;
+}
+
+.flight-card:hover {
+  border-color: #1890ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+}
+
+.flight-route {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.flight-time {
+  color: #666;
+  font-size: 14px;
+}
+
+.flight-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #f5222d;
+}
+
+.search-form {
+  background: #f8f9fa;
+  padding: 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 24px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Loading and error states */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.error-container {
+  text-align: center;
+  padding: 48px;
+  color: #ff4d4f;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .ant-layout-content {
+    margin: 12px;
+    padding: 16px;
+  }
+  
+  .search-form {
+    padding: 16px;
+  }
+  
+  .ant-col {
+    margin-bottom: 16px;
+  }
+}
