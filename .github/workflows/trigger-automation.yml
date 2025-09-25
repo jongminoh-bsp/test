@@ -22,7 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Create payload file
+      - name: Create and encode payload
         run: |
           cat > payload.json << 'EOF'
           {
@@ -44,14 +44,24 @@ jobs:
             }
           }
           EOF
+          
+          # Base64 encode the payload
+          base64 -w 0 payload.json > payload_encoded.txt
 
       - name: Trigger skyline-q-agent Lambda
         run: |
           aws lambda invoke \
             --function-name skyline-q-agent \
-            --payload file://payload.json \
+            --payload "$(cat payload_encoded.txt)" \
             --region ap-northeast-2 \
             response.json
           
           echo "Lambda Response:"
           cat response.json
+
+      - name: Create Infrastructure PR
+        if: success()
+        run: |
+          echo "Infrastructure automation triggered successfully"
+          echo "Waiting for Lambda to generate Terraform and K8s code..."
+          echo "PR will be created automatically by the Lambda function"
