@@ -22,29 +22,36 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
+      - name: Create payload file
+        run: |
+          cat > payload.json << 'EOF'
+          {
+            "repository": "${{ github.repository }}",
+            "branch": "${{ github.ref_name }}",
+            "commit": "${{ github.sha }}",
+            "requirements": {
+              "eks_version": "1.33",
+              "eks_instance_type": "t3.medium",
+              "db_instance_class": "t3.micro",
+              "db_user": "skyline_ojm",
+              "db_name": "skyline",
+              "db_password": "skyline1267",
+              "nat_gateways": 1,
+              "load_balancer": "alb",
+              "domain": "www.greenbespinglobal.store",
+              "image": "646558765106.dkr.ecr.ap-northeast-2.amazonaws.com/skyline-app-lyjking:1.7",
+              "tfstate_bucket": "skyline-infra"
+            }
+          }
+          EOF
+
       - name: Trigger skyline-q-agent Lambda
         run: |
           aws lambda invoke \
             --function-name skyline-q-agent \
-            --payload '{
-              "repository": "${{ github.repository }}",
-              "branch": "${{ github.ref_name }}",
-              "commit": "${{ github.sha }}",
-              "requirements": {
-                "eks_version": "1.33",
-                "eks_instance_type": "t3.medium",
-                "db_instance_class": "t3.micro",
-                "db_user": "skyline_ojm",
-                "db_name": "skyline",
-                "db_password": "skyline1267",
-                "nat_gateways": 1,
-                "load_balancer": "alb",
-                "domain": "www.greenbespinglobal.store",
-                "image": "646558765106.dkr.ecr.ap-northeast-2.amazonaws.com/skyline-app-lyjking:1.7",
-                "tfstate_bucket": "skyline-infra"
-              }
-            }' \
+            --payload file://payload.json \
             --region ap-northeast-2 \
             response.json
           
+          echo "Lambda Response:"
           cat response.json
